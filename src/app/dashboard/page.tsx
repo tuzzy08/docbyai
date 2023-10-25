@@ -14,5 +14,9 @@ export default async function DashboardPage() {
 
 	if (!user) redirect('/auth-callback?origin=dashboard');
 
-	return <Dashboard />;
+	return (
+		<>
+			<Dashboard />
+		</>
+	);
 }
