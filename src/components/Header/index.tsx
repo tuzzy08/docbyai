@@ -4,6 +4,8 @@ import { Fragment } from 'react';
 import Image from 'next/image';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { useUser, useClerk } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
 
 const user = {
 	name: 'Tom Cook',
@@ -21,7 +23,7 @@ const navigation = [
 const userNavigation = [
 	{ name: 'Your Profile', href: '#' },
 	{ name: 'Settings', href: '#' },
-	{ name: 'Sign out', href: '#' },
+	// { name: 'Sign out', href: '#' },
 ];
 
 function classNames(...classes: any[]) {
@@ -29,6 +31,10 @@ function classNames(...classes: any[]) {
 }
 
 export function Header() {
+	const { user: curr_user } = useUser();
+	const { signOut } = useClerk();
+	const router = useRouter();
+
 	return (
 		<Disclosure as='nav' className='bg-gray-800'>
 			{({ open }) => (
@@ -82,13 +88,17 @@ export function Header() {
 											<Menu.Button className='relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800'>
 												<span className='absolute -inset-1.5' />
 												<span className='sr-only'>Open user menu</span>
-												{/* <Image
-													className='h-8 w-8 rounded-full'
-													src={user.imageUrl}
-													alt=''
-													width={25}
-													height={25}
-												/> */}
+												{curr_user != undefined ? (
+													<Image
+														className='h-8 w-8 rounded-full'
+														src={curr_user.imageUrl}
+														alt=''
+														width={25}
+														height={25}
+													/>
+												) : (
+													<></>
+												)}
 											</Menu.Button>
 										</div>
 										<Transition
@@ -101,25 +111,37 @@ export function Header() {
 											leaveTo='transform opacity-0 scale-95'
 										>
 											<Menu.Items className='absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
-												{
-													<>
-														{userNavigation.map((item) => (
-															<Menu.Item key={item.name}>
-																{({ active }) => (
-																	<a
-																		href={item.href}
-																		className={classNames(
-																			active ? 'bg-gray-100' : '',
-																			'block px-4 py-2 text-sm text-gray-700'
-																		)}
-																	>
-																		{item.name}
-																	</a>
+												{userNavigation.map((item) => (
+													<Menu.Item key={item.name}>
+														{({ active }) => (
+															<a
+																href={item.href}
+																className={classNames(
+																	active ? 'bg-gray-100' : '',
+																	'block px-4 py-2 text-sm text-gray-700'
 																)}
-															</Menu.Item>
-														))}
-													</>
-												}
+															>
+																{item.name}
+															</a>
+														)}
+													</Menu.Item>
+												))}
+												<Menu.Item>
+													{({ active }) => (
+														<span
+															onClick={(e) => {
+																e.preventDefault();
+																signOut(() => router.push('/'));
+															}}
+															className={classNames(
+																active ? 'bg-gray-100 cursor-pointer' : '',
+																'block px-4 py-2 text-sm text-gray-700'
+															)}
+														>
+															Sign out
+														</span>
+													)}
+												</Menu.Item>
 											</Menu.Items>
 										</Transition>
 									</Menu>
