@@ -184,20 +184,24 @@ export function Header() {
 						<div className='border-t border-gray-700 pb-3 pt-4'>
 							<div className='flex items-center px-5'>
 								<div className='flex-shrink-0'>
-									{/* <Image
-										className='h-10 w-10 rounded-full'
-										src={user.imageUrl}
-										alt=''
-										width={25}
-										height={25}
-									/> */}
+									{curr_user != undefined ? (
+										<Image
+											className='h-8 w-8 rounded-full'
+											src={curr_user.imageUrl}
+											alt=''
+											width={25}
+											height={25}
+										/>
+									) : (
+										<></>
+									)}
 								</div>
 								<div className='ml-3'>
 									<div className='text-base font-medium text-white'>
-										{user.name}
+										{curr_user?.fullName}
 									</div>
 									<div className='text-sm font-medium text-gray-400'>
-										{user.email}
+										{curr_user?.emailAddresses[0].emailAddress}
 									</div>
 								</div>
 								<button

@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { Inter } from 'next/font/google';
 import { ClerkProvider } from '@clerk/nextjs';
-import { Providers } from '@/components/Providers';
+import { Providers, PostHogPageview } from '@/components/Providers';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -18,6 +19,9 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang='en'>
+			<Suspense>
+				<PostHogPageview />
+			</Suspense>
 			<ClerkProvider>
 				<Providers>
 					<body className={inter.className}>{children}</body>
